@@ -13,12 +13,27 @@ export default {
       },
     },
     extend: {
+      fontFamily: {
+        sans: ["Cairo", "system-ui", "sans-serif"],
+        cairo: ["Cairo", "sans-serif"],
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",
         background: "hsl(var(--background))",
         foreground: "hsl(var(--foreground))",
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
+        brand: {
+          navy: "hsl(var(--brand-navy))",
+          red: "hsl(var(--brand-red))",
+          gold: "hsl(var(--brand-gold))",
+          ivory: "hsl(var(--brand-ivory))",
+          graphite: "hsl(var(--brand-graphite))",
+        },
         primary: {
           DEFAULT: "hsl(var(--primary))",
           foreground: "hsl(var(--primary-foreground))",
