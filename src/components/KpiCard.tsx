@@ -45,9 +45,9 @@ export default function KpiCard({
         )}
       </div>
       <div className="mt-3">
-        <div className={`text-[28px] leading-none font-bold ${toneText[tone]}`}>
+        <div className={`text-[26px] md:text-[28px] leading-none font-bold whitespace-nowrap ${toneText[tone]}`}>
           <span className="num">{typeof value === "number" ? fmtNum(value) : value}</span>
-          {suffix && <span className="text-sm text-muted-foreground mr-1.5 font-medium">{suffix}</span>}
+          {suffix && <span className="text-[13px] text-muted-foreground mr-1.5 font-medium">{suffix}</span>}
         </div>
         {(delta !== undefined || hint) && (
           <div className="mt-2 flex items-center gap-2 text-[12.5px]">
