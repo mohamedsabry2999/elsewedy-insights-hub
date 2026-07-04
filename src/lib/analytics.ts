@@ -136,7 +136,8 @@ export function reorderStats(tx: Transaction[]) {
   const groups = new Map<string, Transaction[]>();
   for (const t of tx) {
     const k = t.clientId + "||" + t.productName;
-    (groups.get(k) || groups.set(k, []).get(k)!).push(t);
+    if (!groups.has(k)) groups.set(k, []);
+    groups.get(k)!.push(t);
   }
   const rows: {
     clientId: string; clientName: string; product: string;
