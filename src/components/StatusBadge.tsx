@@ -12,6 +12,13 @@ export default function StatusBadge({ status }: { status: string }) {
     "متوقف": "bg-muted text-foreground/70 border-border",
     "نشط": "bg-success/15 text-success border-success/30",
     "متباطئ": "bg-brand-gold/15 text-brand-gold border-brand-gold/30",
+    "جديد": "bg-brand-navy/10 text-brand-navy border-brand-navy/20",
+    "في نمو": "bg-success/15 text-success border-success/30",
+    "متراجع": "bg-brand-red/15 text-brand-red border-brand-red/30",
+    "عاجل": "bg-brand-red/15 text-brand-red border-brand-red/40",
+    "مرتفع": "bg-brand-gold/20 text-brand-gold border-brand-gold/40",
+    "متوسط": "bg-brand-navy/10 text-brand-navy border-brand-navy/20",
+    "منخفض": "bg-muted text-muted-foreground border-border",
   };
   const cls = map[status] || "bg-muted text-foreground border-border";
   return <span className={`inline-block px-2.5 py-0.5 rounded-full text-[11px] font-medium border ${cls}`}>{status}</span>;
