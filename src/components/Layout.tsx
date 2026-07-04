@@ -1,11 +1,12 @@
 import { NavLink, Outlet, useNavigate } from "react-router-dom";
 import {
-  LayoutDashboard, Users, Upload, Wand2, User, CalendarRange,
+  LayoutDashboard, Users, Upload, Wand2, User, CalendarRange, Command,
   Package, RefreshCw, TrendingUp, Bell, FileText, LogOut,
 } from "lucide-react";
 import { store } from "@/lib/store";
 
 const nav = [
+  { to: "/executive", label: "مركز القيادة", icon: Command },
   { to: "/dashboard", label: "لوحة القيادة", icon: LayoutDashboard },
   { to: "/clients", label: "العملاء", icon: Users },
   { to: "/upload", label: "مركز الرفع", icon: Upload },
