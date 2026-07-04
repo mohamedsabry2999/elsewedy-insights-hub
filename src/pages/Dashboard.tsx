@@ -136,7 +136,7 @@ export default function Dashboard() {
                 <span className="text-xs font-semibold text-brand-navy">{a.label}</span>
               </div>
               {a.clientName && <div className="text-sm font-medium">{a.clientName}</div>}
-              <div className="text-xs text-muted-foreground mt-1">{a.detail}</div>
+              <div className="text-xs text-muted-foreground mt-1">{a.reason}</div>
             </div>
           ))}
           {alerts.length === 0 && <p className="text-sm text-muted-foreground">لا توجد تنبيهات حالية.</p>}

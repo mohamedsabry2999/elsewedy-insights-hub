@@ -11,9 +11,9 @@ import {
 } from "@/lib/analytics";
 import {
   ResponsiveContainer, BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid,
-  LineChart, Line,
+  LineChart, Line, PieChart, Pie, Cell, Legend,
 } from "recharts";
-import { DollarSign, ShoppingCart, Package, CalendarRange, Sparkles } from "lucide-react";
+import { DollarSign, ShoppingCart, Package, CalendarRange, Sparkles, TrendingUp, Crown } from "lucide-react";
 
 export default function ClientDashboard() {
   const { id } = useParams();
@@ -33,6 +33,11 @@ export default function ClientDashboard() {
 
   const health = healthScore(tx, client.id);
   const status = clientStatus(tx, client.id);
+  const topProd = products[0];
+  const PIE_COLORS = ["hsl(var(--brand-navy))", "hsl(var(--brand-gold))", "hsl(var(--brand-red))", "hsl(var(--success))", "hsl(var(--muted-foreground))", "hsl(var(--brand-graphite))"];
+  const pieData = products.slice(0, 6).map((p) => ({ name: p.name, value: p.revenue }));
+  const otherShare = products.slice(6).reduce((s, p) => s + p.revenue, 0);
+  if (otherShare > 0) pieData.push({ name: "أخرى", value: otherShare });
 
   return (
     <div className="space-y-6">
@@ -42,12 +47,18 @@ export default function ClientDashboard() {
         actions={<StatusBadge status={status} />}
       />
 
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
         <KpiCard label="إجمالي المبيعات" value={fmtCurrency(summary.sales)} icon={DollarSign} />
         <KpiCard label="عدد الطلبات" value={summary.orders} icon={ShoppingCart} />
         <KpiCard label="عدد المنتجات" value={summary.products} icon={Package} tone="gold" />
         <KpiCard label="متوسط الطلب" value={fmtCurrency(summary.aov)} tone="gold" />
+        <KpiCard label="النمو السنوي" value={`${summary.growth.toFixed(1)}%`} tone={summary.growth >= 0 ? "success" : "red"} icon={TrendingUp} />
         <KpiCard label="مؤشر الصحة" value={`${health}/100`} tone={health >= 70 ? "success" : health >= 40 ? "gold" : "red"} />
+        <KpiCard label="أول تعامل" value={fmtDate(summary.first)} icon={CalendarRange} />
+        <KpiCard label="آخر تعامل" value={fmtDate(summary.last)} hint={`منذ ${summary.daysSince} يوم`} />
+        <KpiCard label="أعلى سنة" value={summary.bestYear ? String(summary.bestYear.year) : "—"} hint={summary.bestYear ? fmtCurrency(summary.bestYear.sales) : ""} tone="success" />
+        <KpiCard label="أضعف سنة" value={summary.worstYear ? String(summary.worstYear.year) : "—"} hint={summary.worstYear ? fmtCurrency(summary.worstYear.sales) : ""} tone="red" />
+        <KpiCard label="أعلى منتج مبيعًا" value={topProd?.name || "—"} hint={topProd ? fmtCurrency(topProd.revenue) : ""} icon={Crown} tone="gold" />
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -77,7 +88,19 @@ export default function ClientDashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <Section title="حصة المنتجات من الإيراد">
+          <ResponsiveContainer width="100%" height={240}>
+            <PieChart>
+              <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={45} outerRadius={80} paddingAngle={2}>
+                {pieData.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
+              </Pie>
+              <Tooltip formatter={(v: number) => fmtCurrency(v)} contentStyle={{ direction: "rtl", fontFamily: "Cairo" }} />
+              <Legend wrapperStyle={{ fontSize: "11px", direction: "rtl" }} />
+            </PieChart>
+          </ResponsiveContainer>
+        </Section>
+        <div className="lg:col-span-2">
         <Section title="أهم المنتجات (بالإيراد والتكرار)">
           <table className="w-full text-sm">
             <thead className="text-xs text-muted-foreground border-b border-border">
@@ -100,7 +123,10 @@ export default function ClientDashboard() {
             </tbody>
           </table>
         </Section>
+        </div>
+      </div>
 
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Section title="آخر الطلبات">
           <div className="max-h-80 overflow-y-auto">
             <table className="w-full text-sm">
@@ -157,7 +183,7 @@ export default function ClientDashboard() {
               <h4 className="text-xs font-semibold text-muted-foreground mb-2">تنبيهات خاصة بالعميل</h4>
               <ul className="text-xs space-y-1.5">
                 {alerts.slice(0, 5).map((a, i) => (
-                  <li key={i}>• <b>{a.label}:</b> {a.detail}</li>
+                  <li key={i}>• <b>{a.label}:</b> {a.reason}</li>
                 ))}
               </ul>
             </div>
