@@ -11,6 +11,15 @@ import {
 } from "@/lib/analytics";
 import { Printer, FileText } from "lucide-react";
 
+function Kpi({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="p-3 rounded-lg border border-border bg-muted/30">
+      <div className="text-[11px] text-muted-foreground">{label}</div>
+      <div className="text-base font-bold text-brand-navy num mt-0.5">{value}</div>
+    </div>
+  );
+}
+
 type ReportKind =
   | "client_annual" | "multi_year_growth" | "product_reorder"
   | "lost_products" | "sales_visit" | "executive_summary" | "opportunities";
