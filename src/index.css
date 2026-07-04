@@ -86,5 +86,4 @@ All colors MUST be HSL.
   .brand-gradient { background: var(--gradient-hero); }
   .gold-gradient { background: var(--gradient-gold); }
   .num { font-feature-settings: "tnum"; direction: ltr; display: inline-block; }
-  }
 }
