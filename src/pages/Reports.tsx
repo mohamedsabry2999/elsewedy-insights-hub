@@ -229,5 +229,39 @@ function renderReport(kind: ReportKind, tx: any[], clientId?: string) {
         </div>
       );
     }
+    case "opportunities": {
+      const arr = clientId ? tx.filter((t: any) => t.clientId === clientId) : tx;
+      const opps = generateOpportunities(arr).slice(0, 60);
+      return (
+        <div className="space-y-3 text-sm">
+          <h2 className="text-xl font-bold text-brand-navy">تقرير فرص البيع والتنبيهات</h2>
+          <p>مصنّفة بحسب الأولوية مع الإجراء المقترح لفريق المبيعات.</p>
+          <table className="w-full text-sm border border-border">
+            <thead className="bg-muted/50 text-xs">
+              <tr>
+                <th className="text-right p-2">النوع</th>
+                <th className="text-right p-2">العميل</th>
+                <th className="text-right p-2">المنتج</th>
+                <th className="text-right p-2">الأولوية</th>
+                <th className="text-right p-2">السبب / التأثير</th>
+                <th className="text-right p-2">الإجراء</th>
+              </tr>
+            </thead>
+            <tbody>
+              {opps.map((o, i) => (
+                <tr key={i} className="border-t border-border align-top">
+                  <td className="p-2 whitespace-nowrap">{o.label}</td>
+                  <td className="p-2">{o.clientName || "—"}</td>
+                  <td className="p-2">{o.product || "—"}</td>
+                  <td className="p-2">{o.priority}</td>
+                  <td className="p-2 text-xs text-muted-foreground">{o.reason} <br /><span className="text-brand-navy">{o.impact}</span></td>
+                  <td className="p-2 text-xs">{o.action}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      );
+    }
   }
 }
