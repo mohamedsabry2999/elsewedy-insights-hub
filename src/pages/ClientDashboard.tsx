@@ -88,7 +88,19 @@ export default function ClientDashboard() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <Section title="حصة المنتجات من الإيراد">
+          <ResponsiveContainer width="100%" height={240}>
+            <PieChart>
+              <Pie data={pieData} dataKey="value" nameKey="name" cx="50%" cy="50%" innerRadius={45} outerRadius={80} paddingAngle={2}>
+                {pieData.map((_, i) => <Cell key={i} fill={PIE_COLORS[i % PIE_COLORS.length]} />)}
+              </Pie>
+              <Tooltip formatter={(v: number) => fmtCurrency(v)} contentStyle={{ direction: "rtl", fontFamily: "Cairo" }} />
+              <Legend wrapperStyle={{ fontSize: "11px", direction: "rtl" }} />
+            </PieChart>
+          </ResponsiveContainer>
+        </Section>
+        <div className="lg:col-span-2">
         <Section title="أهم المنتجات (بالإيراد والتكرار)">
           <table className="w-full text-sm">
             <thead className="text-xs text-muted-foreground border-b border-border">
@@ -111,7 +123,10 @@ export default function ClientDashboard() {
             </tbody>
           </table>
         </Section>
+        </div>
+      </div>
 
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Section title="آخر الطلبات">
           <div className="max-h-80 overflow-y-auto">
             <table className="w-full text-sm">
