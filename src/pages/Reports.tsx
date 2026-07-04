@@ -81,28 +81,48 @@ export default function Reports() {
 function renderReport(kind: ReportKind, tx: any[], clientId?: string) {
   switch (kind) {
     case "executive_summary": {
-      const top = topClient(tx);
-      const growth = yoyGrowth(tx);
       const y = byYear(tx);
+      const narrative = executiveNarrative(tx);
+      const opps = generateOpportunities(tx);
+      const urgent = opps.filter((o) => o.priority === "عاجل").slice(0, 6);
+      const prods = topProducts(tx, 6);
       return (
         <div className="space-y-5 text-sm leading-loose">
-          <h2 className="text-xl font-bold text-brand-navy">الملخص التنفيذي</h2>
-          <p>
-            حقق مركز الأعمال إجمالي مبيعات قدره <b className="num">{fmtCurrency(totalSales(tx))}</b> عبر
-            {" "}<b className="num">{fmtNum(ordersCount(tx))}</b> طلب و <b className="num">{fmtNum(uniqueClients(tx))}</b> عميل نشط،
-            بمتوسط قيمة طلب <b className="num">{fmtCurrency(avgOrderValue(tx))}</b>.
-            نسبة النمو السنوي الحالية <b className={growth >= 0 ? "text-success" : "text-brand-red"}>{growth.toFixed(1)}%</b>.
-          </p>
-          {top && <p>أفضل عميل من حيث الإيراد: <b>{top.name}</b> بإجمالي <span className="num">{fmtCurrency(top.revenue)}</span>.</p>}
+          <h2 className="text-xl font-bold text-brand-navy">الملخص التنفيذي للإدارة</h2>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+            <Kpi label="إجمالي المبيعات" value={fmtCurrency(totalSales(tx))} />
+            <Kpi label="الطلبات" value={fmtNum(ordersCount(tx))} />
+            <Kpi label="العملاء" value={fmtNum(uniqueClients(tx))} />
+            <Kpi label="متوسط الطلب" value={fmtCurrency(avgOrderValue(tx))} />
+            <Kpi label="نمو سنوي" value={`${yoyGrowth(tx).toFixed(1)}%`} />
+            <Kpi label="CAGR" value={cagr(tx) ? `${cagr(tx).toFixed(1)}%` : "—"} />
+            <Kpi label="الاتجاه" value={trendLabel(yoyGrowth(tx))} />
+            <Kpi label="فرص عاجلة" value={String(opps.filter((o)=>o.priority==="عاجل").length)} />
+          </div>
+          <ul className="list-disc pr-5 space-y-1.5">{narrative.map((s, i) => <li key={i}>{s}</li>)}</ul>
           <div>
             <h3 className="font-semibold mb-2">أداء السنوات:</h3>
             <table className="w-full text-sm border border-border">
-              <thead className="bg-muted/50 text-xs"><tr><th className="text-right p-2">السنة</th><th className="text-right p-2">المبيعات</th><th className="text-right p-2">الطلبات</th></tr></thead>
-              <tbody>{y.map((r) => (<tr key={r.year} className="border-t border-border"><td className="p-2">{r.year}</td><td className="p-2 num">{fmtCurrency(r.sales)}</td><td className="p-2 num">{fmtNum(r.orders)}</td></tr>))}</tbody>
+              <thead className="bg-muted/50 text-xs"><tr><th className="text-right p-2">السنة</th><th className="text-right p-2">المبيعات</th><th className="text-right p-2">الطلبات</th><th className="text-right p-2">تنوع المنتجات</th></tr></thead>
+              <tbody>{y.map((r) => (<tr key={r.year} className="border-t border-border"><td className="p-2">{r.year}</td><td className="p-2 num">{fmtCurrency(r.sales)}</td><td className="p-2 num">{fmtNum(r.orders)}</td><td className="p-2 num">{r.products}</td></tr>))}</tbody>
             </table>
           </div>
-          <p className="text-muted-foreground">
-            التوصية: تعزيز محفظة الخدمات الأعلى ربحًا (علب التغليف الفاخرة، الاستيكرات، التشطيبات الذهبية) والاستمرار في متابعة العملاء ذوي الاعتماد المرتفع على منتج واحد.
+          <div>
+            <h3 className="font-semibold mb-2">أعلى المنتجات:</h3>
+            <ul className="list-disc pr-5 space-y-0.5">
+              {prods.map((p) => <li key={p.name}>{p.name} — <span className="num text-muted-foreground">{fmtCurrency(p.revenue)}</span></li>)}
+            </ul>
+          </div>
+          {urgent.length > 0 && (
+            <div>
+              <h3 className="font-semibold mb-2">أهم الفرص العاجلة:</h3>
+              <ul className="list-disc pr-5 space-y-1">
+                {urgent.map((o, i) => <li key={i}><b>{o.label}</b> — {o.clientName}: {o.action}</li>)}
+              </ul>
+            </div>
+          )}
+          <p className="text-muted-foreground border-t border-border pt-3">
+            التوصية للإدارة: التركيز على العملاء ذوي الاعتماد المرتفع لتقليل المخاطر، وتوسيع محفظة المنتجات عبر البيع المتقاطع (استيكرات وليبلز وتشطيبات فاخرة Spot UV / Foil Stamping)، مع إعادة تفعيل العملاء المتوقفين خلال الربع القادم.
           </p>
         </div>
       );
