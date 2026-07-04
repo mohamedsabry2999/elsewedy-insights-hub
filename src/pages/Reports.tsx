@@ -7,20 +7,22 @@ import { store } from "@/lib/store";
 import {
   clientSummary, insightsForClient, topProducts, reorderStats, byYear,
   totalSales, ordersCount, fmtCurrency, fmtDate, fmtNum, uniqueClients, avgOrderValue, yoyGrowth, topClient,
+  executiveNarrative, generateOpportunities, cagr, trendLabel,
 } from "@/lib/analytics";
 import { Printer, FileText } from "lucide-react";
 
 type ReportKind =
   | "client_annual" | "multi_year_growth" | "product_reorder"
-  | "lost_products" | "sales_visit" | "executive_summary";
+  | "lost_products" | "sales_visit" | "executive_summary" | "opportunities";
 
 const REPORTS: { id: ReportKind; label: string }[] = [
+  { id: "executive_summary", label: "الملخص التنفيذي" },
   { id: "client_annual", label: "التقرير السنوي للعميل" },
   { id: "multi_year_growth", label: "تقرير النمو متعدد السنوات" },
   { id: "product_reorder", label: "تقرير إعادة طلب المنتجات" },
   { id: "lost_products", label: "تقرير المنتجات المتوقفة" },
+  { id: "opportunities", label: "تقرير فرص البيع" },
   { id: "sales_visit", label: "تقرير زيارة مبيعات" },
-  { id: "executive_summary", label: "الملخص التنفيذي" },
 ];
 
 export default function Reports() {
