@@ -157,7 +157,7 @@ export default function ClientDashboard() {
               <h4 className="text-xs font-semibold text-muted-foreground mb-2">تنبيهات خاصة بالعميل</h4>
               <ul className="text-xs space-y-1.5">
                 {alerts.slice(0, 5).map((a, i) => (
-                  <li key={i}>• <b>{a.label}:</b> {a.detail}</li>
+                  <li key={i}>• <b>{a.label}:</b> {a.reason}</li>
                 ))}
               </ul>
             </div>
