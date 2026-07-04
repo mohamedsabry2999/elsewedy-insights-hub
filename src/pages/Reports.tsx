@@ -79,6 +79,7 @@ export default function Reports() {
 }
 
 function renderReport(kind: ReportKind, tx: any[], clientId?: string) {
+  const _unused = clientId; void _unused;
   switch (kind) {
     case "executive_summary": {
       const y = byYear(tx);
