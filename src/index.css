@@ -119,6 +119,19 @@ All colors MUST be HSL.
   .exec-table tbody td {
     @apply py-3.5 px-4 align-middle;
   }
+  /* Responsive table wrapper — enforces horizontal scroll on narrow screens */
+  .table-wrap {
+    @apply -mx-4 md:-mx-6 overflow-x-auto;
+  }
+  .table-wrap > table {
+    @apply min-w-[720px];
+  }
+  .table-wrap.wide > table { @apply min-w-[1000px]; }
+  .table-wrap.xwide > table { @apply min-w-[1200px]; }
+  .table-wrap td, .table-wrap th {
+    white-space: nowrap;
+  }
+  .table-wrap td.wrap, .table-wrap th.wrap { white-space: normal; }
 }
 
 @media print {

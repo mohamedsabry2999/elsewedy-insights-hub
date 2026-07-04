@@ -90,43 +90,43 @@ export default function ReorderCycle() {
         {rows.length === 0 ? (
           <p className="text-sm text-muted-foreground py-6 text-center">لا نتائج مطابقة.</p>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+          <div className="table-wrap xwide">
+            <table className="exec-table">
               <thead className="text-xs text-muted-foreground border-b border-border">
                 <tr>
-                  <th className="text-right py-2 px-2">العميل</th>
-                  <th className="text-right py-2 px-2">المنتج</th>
-                  <th className="text-right py-2 px-2">آخر طلب</th>
-                  <th className="text-right py-2 px-2">عدد الطلبات</th>
-                  <th className="text-right py-2 px-2">متوسط الدورة</th>
-                  <th className="text-right py-2 px-2">مدى الدورة</th>
-                  <th className="text-right py-2 px-2">الموعد المتوقع</th>
-                  <th className="text-right py-2 px-2">التأخير</th>
-                  <th className="text-right py-2 px-2">إيراد المنتج</th>
-                  <th className="text-right py-2 px-2">الحالة</th>
-                  <th className="text-right py-2 px-2">الأولوية</th>
-                  <th className="text-right py-2 px-2 min-w-72">التوصية</th>
+                  <th className="wrap">العميل</th>
+                  <th className="wrap">المنتج</th>
+                  <th>آخر طلب</th>
+                  <th>عدد الطلبات</th>
+                  <th>متوسط الدورة</th>
+                  <th>مدى الدورة</th>
+                  <th>الموعد المتوقع</th>
+                  <th>التأخير</th>
+                  <th>إيراد المنتج</th>
+                  <th>الحالة</th>
+                  <th>الأولوية</th>
+                  <th className="wrap" style={{ minWidth: 260 }}>التوصية</th>
                 </tr>
               </thead>
               <tbody>
                 {rows.map((r, i) => (
-                  <tr key={i} className="border-b border-border/40 hover:bg-muted/30 align-top">
-                    <td className="py-2 px-2 font-medium">
+                  <tr key={i} className="align-top">
+                    <td className="font-medium wrap">
                       <Link to={`/client/${r.clientId}`} className="text-brand-navy hover:text-brand-red hover:underline">{r.clientName}</Link>
                     </td>
-                    <td className="py-2 px-2">{r.product}</td>
-                    <td className="py-2 px-2">{fmtDate(r.lastOrder)}</td>
-                    <td className="py-2 px-2 num">{fmtNum(r.orders)}</td>
-                    <td className="py-2 px-2 num">{r.avgCycle ? `${r.avgCycle} يوم` : "—"}</td>
-                    <td className="py-2 px-2 num text-xs text-muted-foreground">{r.minCycle && r.maxCycle ? `${r.minCycle}-${r.maxCycle}` : "—"}</td>
-                    <td className="py-2 px-2">{r.nextExpected === "—" ? "—" : fmtDate(r.nextExpected)}</td>
-                    <td className={`py-2 px-2 num ${r.delayDays > 0 ? "text-brand-red" : "text-muted-foreground"}`}>
+                    <td className="wrap">{r.product}</td>
+                    <td>{fmtDate(r.lastOrder)}</td>
+                    <td className="num">{fmtNum(r.orders)}</td>
+                    <td className="num">{r.avgCycle ? `${r.avgCycle} يوم` : "—"}</td>
+                    <td className="num text-xs text-muted-foreground">{r.minCycle && r.maxCycle ? `${r.minCycle}-${r.maxCycle}` : "—"}</td>
+                    <td>{r.nextExpected === "—" ? "—" : fmtDate(r.nextExpected)}</td>
+                    <td className={`num ${r.delayDays > 0 ? "text-brand-red font-semibold" : "text-muted-foreground"}`}>
                       {r.avgCycle ? (r.delayDays > 0 ? `+${r.delayDays}` : r.delayDays) : "—"}
                     </td>
-                    <td className="py-2 px-2 num">{fmtCurrency(r.revenue)}</td>
-                    <td className="py-2 px-2"><StatusBadge status={r.status} /></td>
-                    <td className="py-2 px-2"><StatusBadge status={r.priority} /></td>
-                    <td className="py-2 px-2 text-xs text-muted-foreground leading-relaxed">{r.recommendation}</td>
+                    <td className="num">{fmtCurrency(r.revenue)}</td>
+                    <td><StatusBadge status={r.status} /></td>
+                    <td><StatusBadge status={r.priority} /></td>
+                    <td className="wrap text-xs text-muted-foreground leading-relaxed">{r.recommendation}</td>
                   </tr>
                 ))}
               </tbody>

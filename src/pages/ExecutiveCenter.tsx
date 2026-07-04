@@ -73,7 +73,7 @@ export default function ExecutiveCenter() {
       />
 
       {/* KPI hero */}
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-3 md:gap-4">
         <KpiCard label="إجمالي المبيعات" value={fmtCurrency(kpis.sales)} icon={DollarSign} />
         <KpiCard label="عدد الطلبات" value={kpis.orders} icon={ShoppingCart} />
         <KpiCard label="العملاء النشطون" value={kpis.clients} icon={Users} />
@@ -96,31 +96,31 @@ export default function ExecutiveCenter() {
 
       {/* Row: Sector performance + Sales by year */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Section title="أداء القطاعات">
-          <div className="overflow-x-auto">
-            <table className="w-full text-sm">
+        <Section title="أداء القطاعات" padded={false}>
+          <div className="table-wrap">
+            <table className="exec-table">
               <thead className="text-xs text-muted-foreground border-b border-border">
                 <tr>
-                  <th className="text-right py-2 px-2">القطاع</th>
-                  <th className="text-right py-2 px-2">المبيعات</th>
-                  <th className="text-right py-2 px-2">الطلبات</th>
-                  <th className="text-right py-2 px-2">العملاء</th>
-                  <th className="text-right py-2 px-2">الحصة</th>
+                  <th className="wrap">القطاع</th>
+                  <th>المبيعات</th>
+                  <th>الطلبات</th>
+                  <th>العملاء</th>
+                  <th>الحصة</th>
                 </tr>
               </thead>
               <tbody>
                 {sectorPerf.map((s) => {
                   const share = kpis.sales ? (s.sales / kpis.sales) * 100 : 0;
                   return (
-                    <tr key={s.sector} className="border-b border-border/40">
-                      <td className="py-2 px-2 font-medium">{s.sector}</td>
-                      <td className="py-2 px-2 num">{fmtCurrency(s.sales)}</td>
-                      <td className="py-2 px-2 num">{fmtNum(s.orders)}</td>
-                      <td className="py-2 px-2 num">{s.clients}</td>
-                      <td className="py-2 px-2">
+                    <tr key={s.sector}>
+                      <td className="font-medium wrap">{s.sector}</td>
+                      <td className="num">{fmtCurrency(s.sales)}</td>
+                      <td className="num">{fmtNum(s.orders)}</td>
+                      <td className="num">{s.clients}</td>
+                      <td>
                         <div className="flex items-center gap-2">
-                          <div className="w-20 h-1.5 bg-muted rounded-full overflow-hidden">
-                            <div className="h-full bg-brand-gold" style={{ width: `${share}%` }} />
+                          <div className="w-20 h-1.5 bg-muted rounded-full overflow-hidden shrink-0">
+                            <div className="h-full bg-brand-red" style={{ width: `${share}%` }} />
                           </div>
                           <span className="text-xs num">{share.toFixed(0)}%</span>
                         </div>
