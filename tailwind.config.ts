@@ -16,6 +16,7 @@ export default {
       fontFamily: {
         sans: ["Cairo", "system-ui", "sans-serif"],
         cairo: ["Cairo", "sans-serif"],
+        inter: ["Inter", "system-ui", "sans-serif"],
       },
       colors: {
         border: "hsl(var(--border))",
@@ -27,10 +28,19 @@ export default {
           DEFAULT: "hsl(var(--success))",
           foreground: "hsl(var(--success-foreground))",
         },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
+        },
+        info: {
+          DEFAULT: "hsl(var(--info))",
+          foreground: "hsl(var(--info-foreground))",
+        },
         brand: {
           navy: "hsl(var(--brand-navy))",
           red: "hsl(var(--brand-red))",
           gold: "hsl(var(--brand-gold))",
+          orange: "hsl(var(--brand-orange))",
           ivory: "hsl(var(--brand-ivory))",
           graphite: "hsl(var(--brand-graphite))",
         },
