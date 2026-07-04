@@ -3,7 +3,7 @@ import PageHeader from "@/components/PageHeader";
 import Section from "@/components/Section";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { store } from "@/lib/store";
-import { totalSales, ordersCount, avgOrderValue, fmtCurrency, fmtNum } from "@/lib/analytics";
+import { totalSales, ordersCount, avgOrderValue, cagr, trendLabel, fmtCurrency, fmtNum } from "@/lib/analytics";
 import { ResponsiveContainer, LineChart, Line, XAxis, YAxis, Tooltip, CartesianGrid, Legend } from "recharts";
 
 export default function GrowthAnalysis() {
@@ -34,7 +34,8 @@ export default function GrowthAnalysis() {
     };
   });
   const lastGrowth = withGrowth[withGrowth.length - 1]?.salesGrowth ?? 0;
-  const trend = lastGrowth >= 25 ? "نمو قوي" : lastGrowth >= 10 ? "نمو مستقر" : lastGrowth >= 0 ? "نمو ضعيف" : lastGrowth >= -15 ? "تراجع" : "تراجع حاد";
+  const trend = trendLabel(lastGrowth);
+  const cagrPct = cagr(arr);
 
   return (
     <div className="space-y-6">
@@ -51,6 +52,11 @@ export default function GrowthAnalysis() {
         <span className={`text-xs px-3 py-1.5 rounded-full border ${lastGrowth >= 0 ? "text-success border-success/40 bg-success/10" : "text-brand-red border-brand-red/40 bg-brand-red/10"}`}>
           الاتجاه: {trend}
         </span>
+        {cagrPct !== 0 && (
+          <span className="text-xs px-3 py-1.5 rounded-full border border-brand-gold/40 bg-brand-gold/10 text-brand-gold">
+            CAGR: {cagrPct.toFixed(1)}%
+          </span>
+        )}
       </div>
 
       <Section title="اتجاه المبيعات السنوي">
