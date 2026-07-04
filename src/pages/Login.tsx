@@ -14,7 +14,7 @@ export default function Login() {
     e.preventDefault();
     seedDemoIfEmpty();
     store.login(email);
-    nav("/dashboard");
+    nav("/executive");
   };
 
   return (
