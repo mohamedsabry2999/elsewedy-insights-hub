@@ -121,7 +121,7 @@ All colors MUST be HSL.
   }
   /* Responsive table wrapper — enforces horizontal scroll on narrow screens */
   .table-wrap {
-    @apply -mx-6 md:mx-0 overflow-x-auto;
+    @apply -mx-4 md:-mx-6 overflow-x-auto;
   }
   .table-wrap > table {
     @apply min-w-[720px];
