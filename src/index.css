@@ -8,59 +8,65 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Elsewedy Print House brand palette */
-    --background: 40 40% 95%;              /* ivory F7F3EA */
-    --foreground: 220 12% 21%;             /* graphite 2F3640 */
+    /* Medhat Elsewedy Printhouse — Executive Analytics palette */
+    --background: 220 14% 97%;             /* F5F6F8 */
+    --foreground: 220 5% 20%;              /* 2F3136 */
 
     --card: 0 0% 100%;
-    --card-foreground: 220 12% 21%;
+    --card-foreground: 220 5% 20%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 220 12% 21%;
+    --popover-foreground: 220 5% 20%;
 
-    --primary: 222 47% 8%;                 /* dark navy 0B1220 */
-    --primary-foreground: 40 40% 95%;
+    --primary: 358 71% 50%;                /* Elsewedy red D7262E */
+    --primary-foreground: 0 0% 100%;
 
-    --secondary: 220 15% 94%;
-    --secondary-foreground: 222 47% 8%;
+    --secondary: 220 14% 96%;
+    --secondary-foreground: 220 5% 20%;
 
-    --muted: 220 14% 92%;                  /* soft gray E6E8EC */
-    --muted-foreground: 220 8% 40%;
+    --muted: 220 14% 95%;
+    --muted-foreground: 220 6% 46%;        /* 6B7280 */
 
-    --accent: 44 51% 54%;                  /* gold C9A24D */
-    --accent-foreground: 222 47% 8%;
+    --accent: 15 87% 60%;                  /* orange F36C3D */
+    --accent-foreground: 0 0% 100%;
 
-    --destructive: 354 76% 47%;            /* red D71920 */
+    --destructive: 0 72% 51%;              /* DC2626 */
     --destructive-foreground: 0 0% 100%;
 
-    --success: 168 76% 36%;                /* green 16A085 */
+    --success: 142 71% 36%;                /* 16A34A */
     --success-foreground: 0 0% 100%;
+    --warning: 38 92% 50%;                 /* F59E0B */
+    --warning-foreground: 0 0% 100%;
+    --info: 217 91% 50%;                   /* 2563EB */
+    --info-foreground: 0 0% 100%;
 
-    --brand-navy: 222 47% 8%;
-    --brand-red: 354 76% 47%;
+    --brand-red: 358 71% 50%;              /* D7262E */
+    --brand-orange: 15 87% 60%;            /* F36C3D */
+    --brand-graphite: 220 5% 20%;          /* 2F3136 */
     --brand-gold: 44 51% 54%;
-    --brand-ivory: 40 40% 95%;
-    --brand-graphite: 220 12% 21%;
+    --brand-navy: 220 5% 20%;              /* alias to graphite for backwards compat */
+    --brand-ivory: 220 14% 97%;
 
-    --border: 220 14% 88%;
-    --input: 220 14% 88%;
-    --ring: 222 47% 8%;
+    --border: 220 12% 91%;                 /* E6E8EC */
+    --input: 220 12% 91%;
+    --ring: 358 71% 50%;
 
-    --radius: 0.75rem;
+    --radius: 1rem;
 
-    --sidebar-background: 222 47% 8%;
-    --sidebar-foreground: 40 40% 92%;
-    --sidebar-primary: 44 51% 54%;
-    --sidebar-primary-foreground: 222 47% 8%;
-    --sidebar-accent: 222 40% 14%;
-    --sidebar-accent-foreground: 40 40% 95%;
-    --sidebar-border: 222 30% 16%;
-    --sidebar-ring: 44 51% 54%;
+    --sidebar-background: 220 5% 20%;      /* 2F3136 graphite */
+    --sidebar-foreground: 220 10% 88%;
+    --sidebar-primary: 358 71% 55%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 220 6% 26%;
+    --sidebar-accent-foreground: 0 0% 100%;
+    --sidebar-border: 220 6% 28%;
+    --sidebar-ring: 358 71% 55%;
 
-    --gradient-hero: linear-gradient(135deg, hsl(222 47% 8%) 0%, hsl(222 47% 14%) 60%, hsl(354 76% 47%) 140%);
+    --gradient-hero: linear-gradient(135deg, hsl(220 5% 20%) 0%, hsl(220 6% 26%) 100%);
+    --gradient-brand: linear-gradient(135deg, hsl(358 71% 50%), hsl(15 87% 60%));
     --gradient-gold: linear-gradient(135deg, hsl(44 60% 60%), hsl(44 51% 44%));
-    --shadow-card: 0 4px 20px -8px hsl(222 47% 8% / 0.15);
-    --shadow-elevated: 0 10px 40px -12px hsl(222 47% 8% / 0.25);
+    --shadow-card: 0 1px 2px hsl(220 5% 20% / 0.04), 0 1px 3px hsl(220 5% 20% / 0.03);
+    --shadow-elevated: 0 8px 24px -12px hsl(220 5% 20% / 0.12);
   }
 }
 
@@ -80,10 +86,42 @@ All colors MUST be HSL.
 
 @layer components {
   .kpi-card {
-    @apply bg-card rounded-xl p-5 border border-border;
+    @apply bg-card rounded-[18px] p-6 border border-border transition-all;
+    box-shadow: var(--shadow-card);
+  }
+  .kpi-card:hover {
+    border-color: hsl(var(--foreground) / 0.15);
+  }
+  .exec-card {
+    @apply bg-card rounded-[18px] border border-border;
     box-shadow: var(--shadow-card);
   }
   .brand-gradient { background: var(--gradient-hero); }
+  .brand-red-gradient { background: var(--gradient-brand); }
   .gold-gradient { background: var(--gradient-gold); }
-  .num { font-feature-settings: "tnum"; direction: ltr; display: inline-block; }
+  .num {
+    font-family: 'Inter', 'Cairo', system-ui, sans-serif;
+    font-feature-settings: "tnum";
+    direction: ltr;
+    display: inline-block;
+    letter-spacing: -0.01em;
+  }
+  .exec-table {
+    @apply w-full text-sm;
+  }
+  .exec-table thead th {
+    @apply text-xs font-semibold text-muted-foreground bg-muted/50 py-3 px-4 text-right border-b border-border sticky top-0;
+  }
+  .exec-table tbody tr {
+    @apply border-b border-border/60 hover:bg-muted/40 transition-colors;
+  }
+  .exec-table tbody tr:nth-child(even) { background-color: hsl(var(--muted) / 0.25); }
+  .exec-table tbody td {
+    @apply py-3.5 px-4 align-middle;
+  }
+}
+
+@media print {
+  aside, .no-print { display: none !important; }
+  body { background: white !important; }
 }
