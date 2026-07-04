@@ -1,0 +1,11 @@
+export default function PageHeader({ title, subtitle, actions }: { title: string; subtitle?: string; actions?: React.ReactNode }) {
+  return (
+    <div className="flex items-start justify-between mb-6 gap-4 flex-wrap">
+      <div>
+        <h1 className="text-2xl md:text-3xl font-bold text-brand-navy">{title}</h1>
+        {subtitle && <p className="text-muted-foreground mt-1 text-sm">{subtitle}</p>}
+      </div>
+      {actions && <div className="flex items-center gap-2">{actions}</div>}
+    </div>
+  );
+}
