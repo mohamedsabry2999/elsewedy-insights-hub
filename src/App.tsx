@@ -7,6 +7,7 @@ import { store, seedDemoIfEmpty } from "@/lib/store";
 import Layout from "@/components/Layout";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
+import ExecutiveCenter from "./pages/ExecutiveCenter";
 import Clients from "./pages/Clients";
 import ClientDashboard from "./pages/ClientDashboard";
 import UploadCenter from "./pages/UploadCenter";
@@ -37,6 +38,7 @@ const App = () => (
         <Routes>
           <Route path="/" element={<Login />} />
           <Route element={<Protected><Layout /></Protected>}>
+            <Route path="/executive" element={<ExecutiveCenter />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/clients" element={<Clients />} />
             <Route path="/client/:id" element={<ClientDashboard />} />
