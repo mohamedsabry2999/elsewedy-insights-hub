@@ -33,27 +33,27 @@ export default function Dashboard() {
   const topProd = products[0];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 md:space-y-8">
       <PageHeader
         title="لوحة القيادة التنفيذية"
         subtitle="نظرة شاملة على أداء العملاء والمبيعات وفرص النمو."
       />
 
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5">
         <KpiCard label="إجمالي المبيعات" value={fmtCurrency(kpis.sales)} icon={DollarSign} tone="default" />
         <KpiCard label="عدد الطلبات" value={kpis.orders} icon={ShoppingCart} />
         <KpiCard label="عدد العملاء" value={kpis.clients} icon={Users} />
         <KpiCard label="متوسط قيمة الطلب" value={fmtCurrency(kpis.aov)} icon={TrendingUp} tone="gold" />
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-5">
         <KpiCard label="نمو سنوي" value={`${kpis.growth.toFixed(1)}%`} tone={kpis.growth >= 0 ? "success" : "red"} icon={TrendingUp} />
         <KpiCard label="أفضل عميل" value={kpis.top?.name || "—"} hint={kpis.top ? fmtCurrency(kpis.top.revenue) : ""} icon={Star} tone="gold" />
         <KpiCard label="أفضل منتج" value={topProd?.name || "—"} hint={topProd ? fmtCurrency(topProd.revenue) : ""} icon={Package} />
         <KpiCard label="فرص عاجلة" value={alerts.length} icon={AlertTriangle} tone="red" />
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 md:gap-6">
         <div className="lg:col-span-2">
           <Section title="المبيعات الشهرية">
             <ResponsiveContainer width="100%" height={280}>
@@ -80,28 +80,28 @@ export default function Dashboard() {
         </Section>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5 md:gap-6">
         <div className="lg:col-span-2">
           <Section title="أكثر المنتجات مبيعًا">
-            <div className="overflow-x-auto">
-              <table className="w-full text-sm">
-                <thead className="text-xs text-muted-foreground border-b border-border">
+            <div className="table-wrap">
+              <table className="exec-table">
+                <thead>
                   <tr>
-                    <th className="text-right py-2 px-2">المنتج</th>
-                    <th className="text-right py-2 px-2">الإيراد</th>
-                    <th className="text-right py-2 px-2">الطلبات</th>
-                    <th className="text-right py-2 px-2">الكمية</th>
-                    <th className="text-right py-2 px-2">آخر طلب</th>
+                    <th className="wrap">المنتج</th>
+                    <th>الإيراد</th>
+                    <th>الطلبات</th>
+                    <th>الكمية</th>
+                    <th>آخر طلب</th>
                   </tr>
                 </thead>
                 <tbody>
                   {products.map((p) => (
-                    <tr key={p.name} className="border-b border-border/50 last:border-0 hover:bg-muted/40">
-                      <td className="py-2 px-2 font-medium">{p.name}</td>
-                      <td className="py-2 px-2"><span className="num">{fmtCurrency(p.revenue)}</span></td>
-                      <td className="py-2 px-2"><span className="num">{fmtNum(p.orders)}</span></td>
-                      <td className="py-2 px-2"><span className="num">{fmtNum(p.qty)}</span></td>
-                      <td className="py-2 px-2 text-muted-foreground">{fmtDate(p.last)}</td>
+                    <tr key={p.name}>
+                      <td className="wrap font-medium">{p.name}</td>
+                      <td><span className="num">{fmtCurrency(p.revenue)}</span></td>
+                      <td><span className="num">{fmtNum(p.orders)}</span></td>
+                      <td><span className="num">{fmtNum(p.qty)}</span></td>
+                      <td className="text-muted-foreground">{fmtDate(p.last)}</td>
                     </tr>
                   ))}
                 </tbody>

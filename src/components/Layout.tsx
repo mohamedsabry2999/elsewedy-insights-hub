@@ -125,7 +125,7 @@ export default function Layout() {
       <main className="flex-1 min-w-0 overflow-x-hidden flex flex-col">
         {/* Top bar */}
         <header className="sticky top-0 z-30 bg-card/95 backdrop-blur border-b border-border no-print">
-          <div className="max-w-[1440px] mx-auto px-4 md:px-8 h-14 flex items-center gap-3">
+          <div className="max-w-[1440px] mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 h-14 flex items-center gap-3">
             <button
               className="lg:hidden p-2 -mr-2 rounded-md hover:bg-muted"
               onClick={() => setMobileOpen(true)}
@@ -156,7 +156,7 @@ export default function Layout() {
           </div>
         </header>
 
-        <div className="max-w-[1440px] w-full mx-auto p-4 md:p-6 lg:p-8 flex-1">
+        <div className="max-w-[1440px] w-full mx-auto px-4 sm:px-6 lg:px-8 xl:px-10 py-5 md:py-7 lg:py-8 flex-1">
           <Outlet />
         </div>
       </main>

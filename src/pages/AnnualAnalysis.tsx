@@ -36,7 +36,7 @@ export default function AnnualAnalysis() {
   const disappearedProducts = [...prevProducts].filter((p) => !currentProducts.has(p));
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 md:space-y-8">
       <PageHeader title="التحليل السنوي" subtitle="أداء العميل خلال سنة كاملة مع المقارنة بالسنة السابقة." />
 
       <div className="flex gap-3 flex-wrap">
@@ -50,7 +50,7 @@ export default function AnnualAnalysis() {
         </Select>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4 md:gap-5">
         <KpiCard label={`مبيعات ${year}`} value={fmtCurrency(sales)} />
         <KpiCard label="عدد الطلبات" value={orders} />
         <KpiCard label="عدد المنتجات" value={currentProducts.size} tone="gold" />
@@ -70,7 +70,7 @@ export default function AnnualAnalysis() {
         </ResponsiveContainer>
       </Section>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-6">
         <Section title="أهم المنتجات">
           <ul className="text-sm space-y-1">
             {products.map((p) => (
