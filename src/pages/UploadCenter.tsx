@@ -46,6 +46,12 @@ function simText(a: string, b: string) {
   return hits / long.length;
 }
 
+/** Extract 4-digit year from sheet name (e.g. "2024", "Sales 2024", "بيانات 2024"). */
+function yearFromSheetName(name: string, fallback: number): number {
+  const m = String(name).match(/(19|20)\d{2}/);
+  return m ? parseInt(m[0], 10) : fallback;
+}
+
 export default function UploadCenter() {
   const clients = store.getClients();
   const [step, setStep] = useState(1);
@@ -56,6 +62,7 @@ export default function UploadCenter() {
   const [newClientSector, setNewClientSector] = useState("");
   const [year, setYear] = useState<number>(new Date().getFullYear());
   const [rows, setRows] = useState<Record<string, unknown>[]>([]);
+  const [sheetSummary, setSheetSummary] = useState<{ name: string; year: number; rows: number }[]>([]);
   const [headers, setHeaders] = useState<string[]>([]);
   const [mapping, setMapping] = useState<Record<string, string>>({});
   const [fileName, setFileName] = useState("");
@@ -80,12 +87,31 @@ export default function UploadCenter() {
     try {
       const buf = await file.arrayBuffer();
       const wb = XLSX.read(buf, { type: "array" });
-      const ws = wb.Sheets[wb.SheetNames[0]];
-      const data = XLSX.utils.sheet_to_json<Record<string, unknown>>(ws, { defval: "", raw: true });
-      if (!data.length) { toast.error("الملف فارغ."); return; }
-      const hdrs = Object.keys(data[0]);
-      setHeaders(hdrs); setRows(data); setMapping(autoDetectMapping(hdrs));
-      toast.success(`تم تحميل ${data.length} سطر. راجع الأعمدة والمعاينة.`);
+      const allRows: Record<string, unknown>[] = [];
+      const summary: { name: string; year: number; rows: number }[] = [];
+      const headerSet = new Set<string>();
+      for (const name of wb.SheetNames) {
+        const ws = wb.Sheets[name];
+        const data = XLSX.utils.sheet_to_json<Record<string, unknown>>(ws, { defval: "", raw: true });
+        if (!data.length) continue;
+        const yr = yearFromSheetName(name, year);
+        for (const row of data) {
+          Object.keys(row).forEach((h) => headerSet.add(h));
+          allRows.push({ ...row, __sheet: name, __sheetYear: yr });
+        }
+        summary.push({ name, year: yr, rows: data.length });
+      }
+      if (!allRows.length) { toast.error("الملف فارغ."); return; }
+      const hdrs = [...headerSet];
+      setHeaders(hdrs); setRows(allRows); setSheetSummary(summary);
+      setMapping(autoDetectMapping(hdrs));
+      const yrList = summary.map((s) => s.year);
+      if (yrList.length) setYear(Math.max(...yrList));
+      toast.success(
+        summary.length > 1
+          ? `تم تحميل ${allRows.length} سطر من ${summary.length} صفحات (${summary.map((s) => s.year).join("، ")}).`
+          : `تم تحميل ${allRows.length} سطر.`
+      );
       setStep(4);
     } catch {
       toast.error("تعذّر قراءة الملف. تأكد من الصيغة.");
@@ -133,12 +159,14 @@ export default function UploadCenter() {
     for (const r of rows) {
       const productName = String(r[mapping.productName] ?? "").trim();
       const orderDate = parseDate(r[mapping.orderDate]);
+      const sheetYear = typeof r.__sheetYear === "number" ? (r.__sheetYear as number) : undefined;
       if (!productName || !orderDate) { skipped++; continue; }
       const quantity = mapping.quantity ? toNumber(r[mapping.quantity]) : 0;
       const unitPrice = mapping.unitPrice ? toNumber(r[mapping.unitPrice]) : 0;
       let totalValue = mapping.totalValue ? toNumber(r[mapping.totalValue]) : 0;
       if (!totalValue) totalValue = quantity * unitPrice;
       const d = new Date(orderDate);
+      const rowYear = sheetYear ?? d.getFullYear();
 
       const rowClientName = mapping.clientName ? String(r[mapping.clientName] ?? "").trim() : cname;
       const rowClientCode = mapping.clientCode ? String(r[mapping.clientCode] ?? "").trim() : ccode;
@@ -163,7 +191,7 @@ export default function UploadCenter() {
         salesperson: mapping.salesperson ? String(r[mapping.salesperson] ?? "").trim() || undefined : undefined,
         status: mapping.status ? String(r[mapping.status] ?? "").trim() || undefined : undefined,
         notes: mapping.notes ? String(r[mapping.notes] ?? "").trim() || undefined : undefined,
-        year: d.getFullYear(), month: d.getMonth() + 1,
+        year: rowYear, month: d.getMonth() + 1,
       });
     }
     addTransactions(tx);
@@ -174,7 +202,7 @@ export default function UploadCenter() {
     toast.success(`تم استيراد ${tx.length} حركة${skipped ? ` (${skipped} سطر تم تجاهله)` : ""}.`);
     // reset
     setStep(1); setClientId(""); setNewClientName(""); setNewClientCode(""); setNewClientSector("");
-    setRows([]); setHeaders([]); setMapping({}); setFileName("");
+    setRows([]); setHeaders([]); setMapping({}); setFileName(""); setSheetSummary([]);
   };
 
   return (
