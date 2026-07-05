@@ -89,9 +89,6 @@ export function inferPrintType(t: { productName: string; printingType?: string; 
   if (/(digital|ديجيتال|رقمي)/.test(s)) return "Digital";
   return null;
 }
-
-/* ============ Demo seed ============ */
-const DEMO_PRODUCTS = [
   { name: "علبة تغليف شوكولاتة 250 جم", cat: "علب تغليف", type: "Offset", price: 3.5, sectors: ["Food", "Chocolate"] },
   { name: "علبة تغليف تمور 500 جم", cat: "علب تغليف", type: "Offset", price: 4.2, sectors: ["Food", "Dates"] },
   { name: "علبة تغليف تمور 1 كجم", cat: "علب تغليف", type: "Offset", price: 6.8, sectors: ["Food", "Dates"] },
