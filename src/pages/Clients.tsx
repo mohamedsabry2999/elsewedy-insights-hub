@@ -30,7 +30,7 @@ export default function Clients() {
   }, [clients, tx, q]);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 md:space-y-8">
       <PageHeader
         title="العملاء"
         subtitle="قاعدة عملاء بيت الطباعة مع مؤشرات الأداء والحالة."
@@ -42,44 +42,44 @@ export default function Clients() {
         }
       />
       <Section title={`قائمة العملاء (${rows.length})`}>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="text-xs text-muted-foreground border-b border-border">
+        <div className="table-wrap xwide">
+          <table className="exec-table">
+            <thead>
               <tr>
-                <th className="text-right py-2 px-2">اسم العميل</th>
-                <th className="text-right py-2 px-2">الكود</th>
-                <th className="text-right py-2 px-2">القطاع</th>
-                <th className="text-right py-2 px-2">آخر طلب</th>
-                <th className="text-right py-2 px-2">إجمالي المبيعات</th>
-                <th className="text-right py-2 px-2">الطلبات</th>
-                <th className="text-right py-2 px-2">النمو</th>
-                <th className="text-right py-2 px-2">الصحة</th>
-                <th className="text-right py-2 px-2">الحالة</th>
+                <th className="wrap">اسم العميل</th>
+                <th>الكود</th>
+                <th>القطاع</th>
+                <th>آخر طلب</th>
+                <th>إجمالي المبيعات</th>
+                <th>الطلبات</th>
+                <th>النمو</th>
+                <th>الصحة</th>
+                <th>الحالة</th>
               </tr>
             </thead>
             <tbody>
               {rows.map((r) => (
-                <tr key={r.id} className="border-b border-border/50 last:border-0 hover:bg-muted/40">
-                  <td className="py-2 px-2 font-medium">
+                <tr key={r.id}>
+                  <td className="wrap font-medium max-w-[220px]">
                     <Link to={`/client/${r.id}`} className="text-brand-navy hover:text-brand-red hover:underline">{r.name}</Link>
                   </td>
-                  <td className="py-2 px-2 text-muted-foreground">{r.code || "—"}</td>
-                  <td className="py-2 px-2">{r.sector || "—"}</td>
-                  <td className="py-2 px-2 text-muted-foreground">{fmtDate(r.last)}</td>
-                  <td className="py-2 px-2"><span className="num">{fmtCurrency(r.sales)}</span></td>
-                  <td className="py-2 px-2"><span className="num">{fmtNum(r.orders)}</span></td>
-                  <td className={`py-2 px-2 ${r.growth >= 0 ? "text-success" : "text-brand-red"}`}>
+                  <td className="text-muted-foreground">{r.code || "—"}</td>
+                  <td>{r.sector || "—"}</td>
+                  <td className="text-muted-foreground">{fmtDate(r.last)}</td>
+                  <td><span className="num">{fmtCurrency(r.sales)}</span></td>
+                  <td><span className="num">{fmtNum(r.orders)}</span></td>
+                  <td className={`${r.growth >= 0 ? "text-success" : "text-brand-red"}`}>
                     <span className="num">{r.growth.toFixed(1)}%</span>
                   </td>
-                  <td className="py-2 px-2">
+                  <td>
                     <div className="flex items-center gap-2">
-                      <div className="w-16 h-1.5 bg-muted rounded-full overflow-hidden">
+                      <div className="w-14 md:w-16 h-1.5 bg-muted rounded-full overflow-hidden shrink-0">
                         <div className={`h-full ${r.health >= 70 ? "bg-success" : r.health >= 40 ? "bg-brand-gold" : "bg-brand-red"}`} style={{ width: `${r.health}%` }} />
                       </div>
                       <span className="text-xs num">{r.health}</span>
                     </div>
                   </td>
-                  <td className="py-2 px-2"><StatusBadge status={r.status} /></td>
+                  <td><StatusBadge status={r.status} /></td>
                 </tr>
               ))}
               {rows.length === 0 && <tr><td colSpan={9} className="py-6 text-center text-muted-foreground">لا يوجد عملاء مطابقون.</td></tr>}
