@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { store, seedDemoIfEmpty } from "@/lib/store";
+import { store } from "@/lib/store";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -12,7 +12,6 @@ export default function Login() {
 
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
-    seedDemoIfEmpty();
     store.login(email);
     nav("/executive");
   };
