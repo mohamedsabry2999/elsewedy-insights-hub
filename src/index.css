@@ -86,7 +86,7 @@ All colors MUST be HSL.
 
 @layer components {
   .kpi-card {
-    @apply bg-card rounded-[18px] p-6 border border-border transition-all;
+    @apply bg-card rounded-[18px] p-5 md:p-6 border border-border transition-all;
     box-shadow: var(--shadow-card);
   }
   .kpi-card:hover {
@@ -117,7 +117,10 @@ All colors MUST be HSL.
   }
   .exec-table tbody tr:nth-child(even) { background-color: hsl(var(--muted) / 0.25); }
   .exec-table tbody td {
-    @apply py-3.5 px-4 align-middle;
+    @apply py-3 md:py-3.5 px-3 md:px-4 align-middle;
+  }
+  .exec-table thead th {
+    @apply px-3 md:px-4;
   }
   /* Responsive table wrapper — enforces horizontal scroll on narrow screens */
   .table-wrap {
