@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { store, upsertClient, addTransactions, addUpload } from "@/lib/store";
-import { autoDetectMapping, CANONICAL_FIELDS, COLUMN_ALIASES, parseDate, toNumber } from "@/lib/columnMap";
+import { autoDetectMapping, CANONICAL_FIELDS, parseDate, toNumber } from "@/lib/columnMap";
 import { Transaction } from "@/lib/types";
 import { toast } from "sonner";
 import { downloadSampleTemplate } from "@/lib/sampleTemplate";
