@@ -22,6 +22,12 @@ import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
 
+// One-time purge of previously seeded demo data
+if (typeof window !== "undefined" && !localStorage.getItem("eph_clean_v1")) {
+  ["eph_clients", "eph_transactions", "eph_uploads", "eph_aliases", "eph_print_map", "eph_seeded_v3"].forEach((k) => localStorage.removeItem(k));
+  localStorage.setItem("eph_clean_v1", "1");
+}
+
 function Protected({ children }: { children: JSX.Element }) {
   if (!store.isAuthed()) return <Navigate to="/" replace />;
   return children;
