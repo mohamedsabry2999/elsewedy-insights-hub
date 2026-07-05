@@ -7,7 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { store, upsertClient, addTransactions, addUpload } from "@/lib/store";
-import { autoDetectMapping, CANONICAL_FIELDS, COLUMN_ALIASES, parseDate, toNumber } from "@/lib/columnMap";
+import { autoDetectMapping, CANONICAL_FIELDS, parseDate, toNumber } from "@/lib/columnMap";
 import { Transaction } from "@/lib/types";
 import { toast } from "sonner";
 import { downloadSampleTemplate } from "@/lib/sampleTemplate";
@@ -46,6 +46,12 @@ function simText(a: string, b: string) {
   return hits / long.length;
 }
 
+/** Extract 4-digit year from sheet name (e.g. "2024", "Sales 2024", "بيانات 2024"). */
+function yearFromSheetName(name: string, fallback: number): number {
+  const m = String(name).match(/(19|20)\d{2}/);
+  return m ? parseInt(m[0], 10) : fallback;
+}
+
 export default function UploadCenter() {
   const clients = store.getClients();
   const [step, setStep] = useState(1);
@@ -56,6 +62,7 @@ export default function UploadCenter() {
   const [newClientSector, setNewClientSector] = useState("");
   const [year, setYear] = useState<number>(new Date().getFullYear());
   const [rows, setRows] = useState<Record<string, unknown>[]>([]);
+  const [sheetSummary, setSheetSummary] = useState<{ name: string; year: number; rows: number }[]>([]);
   const [headers, setHeaders] = useState<string[]>([]);
   const [mapping, setMapping] = useState<Record<string, string>>({});
   const [fileName, setFileName] = useState("");
@@ -80,12 +87,31 @@ export default function UploadCenter() {
     try {
       const buf = await file.arrayBuffer();
       const wb = XLSX.read(buf, { type: "array" });
-      const ws = wb.Sheets[wb.SheetNames[0]];
-      const data = XLSX.utils.sheet_to_json<Record<string, unknown>>(ws, { defval: "", raw: true });
-      if (!data.length) { toast.error("الملف فارغ."); return; }
-      const hdrs = Object.keys(data[0]);
-      setHeaders(hdrs); setRows(data); setMapping(autoDetectMapping(hdrs));
-      toast.success(`تم تحميل ${data.length} سطر. راجع الأعمدة والمعاينة.`);
+      const allRows: Record<string, unknown>[] = [];
+      const summary: { name: string; year: number; rows: number }[] = [];
+      const headerSet = new Set<string>();
+      for (const name of wb.SheetNames) {
+        const ws = wb.Sheets[name];
+        const data = XLSX.utils.sheet_to_json<Record<string, unknown>>(ws, { defval: "", raw: true });
+        if (!data.length) continue;
+        const yr = yearFromSheetName(name, year);
+        for (const row of data) {
+          Object.keys(row).forEach((h) => headerSet.add(h));
+          allRows.push({ ...row, __sheet: name, __sheetYear: yr });
+        }
+        summary.push({ name, year: yr, rows: data.length });
+      }
+      if (!allRows.length) { toast.error("الملف فارغ."); return; }
+      const hdrs = [...headerSet];
+      setHeaders(hdrs); setRows(allRows); setSheetSummary(summary);
+      setMapping(autoDetectMapping(hdrs));
+      const yrList = summary.map((s) => s.year);
+      if (yrList.length) setYear(Math.max(...yrList));
+      toast.success(
+        summary.length > 1
+          ? `تم تحميل ${allRows.length} سطر من ${summary.length} صفحات (${summary.map((s) => s.year).join("، ")}).`
+          : `تم تحميل ${allRows.length} سطر.`
+      );
       setStep(4);
     } catch {
       toast.error("تعذّر قراءة الملف. تأكد من الصيغة.");
@@ -133,12 +159,14 @@ export default function UploadCenter() {
     for (const r of rows) {
       const productName = String(r[mapping.productName] ?? "").trim();
       const orderDate = parseDate(r[mapping.orderDate]);
+      const sheetYear = typeof r.__sheetYear === "number" ? (r.__sheetYear as number) : undefined;
       if (!productName || !orderDate) { skipped++; continue; }
       const quantity = mapping.quantity ? toNumber(r[mapping.quantity]) : 0;
       const unitPrice = mapping.unitPrice ? toNumber(r[mapping.unitPrice]) : 0;
       let totalValue = mapping.totalValue ? toNumber(r[mapping.totalValue]) : 0;
       if (!totalValue) totalValue = quantity * unitPrice;
       const d = new Date(orderDate);
+      const rowYear = sheetYear ?? d.getFullYear();
 
       const rowClientName = mapping.clientName ? String(r[mapping.clientName] ?? "").trim() : cname;
       const rowClientCode = mapping.clientCode ? String(r[mapping.clientCode] ?? "").trim() : ccode;
@@ -163,7 +191,7 @@ export default function UploadCenter() {
         salesperson: mapping.salesperson ? String(r[mapping.salesperson] ?? "").trim() || undefined : undefined,
         status: mapping.status ? String(r[mapping.status] ?? "").trim() || undefined : undefined,
         notes: mapping.notes ? String(r[mapping.notes] ?? "").trim() || undefined : undefined,
-        year: d.getFullYear(), month: d.getMonth() + 1,
+        year: rowYear, month: d.getMonth() + 1,
       });
     }
     addTransactions(tx);
@@ -174,7 +202,7 @@ export default function UploadCenter() {
     toast.success(`تم استيراد ${tx.length} حركة${skipped ? ` (${skipped} سطر تم تجاهله)` : ""}.`);
     // reset
     setStep(1); setClientId(""); setNewClientName(""); setNewClientCode(""); setNewClientSector("");
-    setRows([]); setHeaders([]); setMapping({}); setFileName("");
+    setRows([]); setHeaders([]); setMapping({}); setFileName(""); setSheetSummary([]);
   };
 
   return (
@@ -233,11 +261,13 @@ export default function UploadCenter() {
       )}
 
       {step === 2 && (
-        <Section title="اختر السنة">
+        <Section title="اختر السنة الافتراضية">
           <div className="max-w-xs">
-            <Label className="mb-2 block">السنة المرتبطة بالبيانات</Label>
+            <Label className="mb-2 block">السنة الافتراضية (تُستخدم فقط عند غياب سنة في اسم الصفحة)</Label>
             <Input type="number" min={2000} max={2100} value={year} onChange={(e) => setYear(+e.target.value)} />
-            <p className="text-xs text-muted-foreground mt-2">تُستخدم للفلترة والعرض؛ التواريخ الفعلية تُقرأ من الملف.</p>
+            <p className="text-xs text-muted-foreground mt-2">
+              إذا كان ملف Excel يحتوي على عدة صفحات وكل صفحة باسم سنة (مثلاً 2023، 2024، 2025) فسيتم قراءة كل صفحة بسنتها تلقائيًا.
+            </p>
           </div>
         </Section>
       )}
@@ -250,16 +280,30 @@ export default function UploadCenter() {
             <div className="text-xs text-muted-foreground mt-1">صيغ مدعومة: .xlsx • .xls • .csv</div>
             <input type="file" accept=".xlsx,.xls,.csv" className="hidden" onChange={(e) => e.target.files?.[0] && onFile(e.target.files[0])} />
           </label>
-          <div className="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
+          <div className="mt-4 flex items-start gap-2 text-xs text-muted-foreground">
             <FileSpreadsheet className="w-4 h-4" />
-            الأعمدة المدعومة: {Object.values(COLUMN_ALIASES).flat().slice(0, 6).join("، ")}...
-            <button className="text-brand-red hover:underline mr-2" onClick={downloadSampleTemplate}>حمّل نموذج جاهز</button>
+            <div className="flex-1">
+              يدعم النظام ملفات بعدة صفحات — كل صفحة سنة مختلفة (مثال: 2023، 2024، 2025) وسيتم دمجها تلقائيًا مع تحديد سنة كل سطر من اسم الصفحة.
+              <button className="text-brand-red hover:underline mr-2" onClick={downloadSampleTemplate}>حمّل نموذج جاهز</button>
+            </div>
           </div>
         </Section>
       )}
 
       {step === 4 && (
         <Section title={`معاينة البيانات (${rows.length} سطر)`}>
+          {sheetSummary.length > 0 && (
+            <div className="mb-4 flex flex-wrap gap-2">
+              {sheetSummary.map((s) => (
+                <div key={s.name} className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted/60 border border-border text-xs">
+                  <FileSpreadsheet className="w-3.5 h-3.5 text-brand-navy" />
+                  <span className="font-semibold">{s.name}</span>
+                  <span className="text-muted-foreground">→ سنة {s.year}</span>
+                  <span className="text-muted-foreground">• {s.rows} سطر</span>
+                </div>
+              ))}
+            </div>
+          )}
           <div className="overflow-x-auto max-h-96 border border-border rounded-lg">
             <table className="w-full text-xs">
               <thead className="text-muted-foreground border-b border-border sticky top-0 bg-card">

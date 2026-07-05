@@ -5,7 +5,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { store } from "@/lib/store";
-import logoAsset from "@/assets/elsewedy-logo.asset.json";
+import logoAsset from "@/assets/el_sewedy_logo.png.asset.json";
 
 const navGroups: { title: string; items: { to: string; label: string; icon: any }[] }[] = [
   {
@@ -54,8 +54,8 @@ export default function Layout() {
   const Sidebar = (
     <aside className="w-[260px] bg-sidebar text-sidebar-foreground flex flex-col border-l border-sidebar-border shrink-0 h-screen sticky top-0">
       <div className="px-4 py-5 border-b border-sidebar-border">
-        <div className="bg-white rounded-xl px-3 py-2.5 flex items-center justify-center">
-          <img src={logoAsset.url} alt="Medhat Elsewedy Printhouse" className="h-11 w-auto object-contain" />
+        <div className="bg-white rounded-xl px-3 py-3 flex items-center justify-center">
+          <img src={logoAsset.url} alt="Medhat Elsewedy Printhouse" className="h-14 w-auto object-contain" />
         </div>
         <div className="text-center mt-3">
           <div className="text-[11px] uppercase tracking-widest text-sidebar-foreground/60 font-semibold">

@@ -3,7 +3,7 @@ import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { store, seedDemoIfEmpty } from "@/lib/store";
+import { store } from "@/lib/store";
 import Layout from "@/components/Layout";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
@@ -22,7 +22,11 @@ import NotFound from "./pages/NotFound.tsx";
 
 const queryClient = new QueryClient();
 
-seedDemoIfEmpty();
+// One-time purge of previously seeded demo data
+if (typeof window !== "undefined" && !localStorage.getItem("eph_clean_v1")) {
+  ["eph_clients", "eph_transactions", "eph_uploads", "eph_aliases", "eph_print_map", "eph_seeded_v3"].forEach((k) => localStorage.removeItem(k));
+  localStorage.setItem("eph_clean_v1", "1");
+}
 
 function Protected({ children }: { children: JSX.Element }) {
   if (!store.isAuthed()) return <Navigate to="/" replace />;
