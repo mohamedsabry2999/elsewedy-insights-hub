@@ -38,10 +38,10 @@ export default function GrowthAnalysis() {
   const cagrPct = cagr(arr);
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 md:space-y-8">
       <PageHeader title="تحليل النمو" subtitle="مقارنة الأداء عبر السنوات: مبيعات، طلبات، تنوع منتجات، ومتوسط قيمة الطلب." />
 
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 flex-wrap">
         <Select value={clientId} onValueChange={setClientId}>
           <SelectTrigger className="w-72"><SelectValue /></SelectTrigger>
           <SelectContent>
@@ -74,33 +74,33 @@ export default function GrowthAnalysis() {
       </Section>
 
       <Section title="جدول النمو السنوي">
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead className="text-xs text-muted-foreground border-b border-border">
+        <div className="table-wrap xwide">
+          <table className="exec-table">
+            <thead>
               <tr>
-                <th className="text-right py-2 px-2">السنة</th>
-                <th className="text-right py-2 px-2">المبيعات</th>
-                <th className="text-right py-2 px-2">نمو المبيعات</th>
-                <th className="text-right py-2 px-2">الطلبات</th>
-                <th className="text-right py-2 px-2">نمو الطلبات</th>
-                <th className="text-right py-2 px-2">تنوع المنتجات</th>
-                <th className="text-right py-2 px-2">نمو التنوع</th>
-                <th className="text-right py-2 px-2">متوسط الطلب</th>
-                <th className="text-right py-2 px-2">نمو المتوسط</th>
+                <th>السنة</th>
+                <th>المبيعات</th>
+                <th>نمو المبيعات</th>
+                <th>الطلبات</th>
+                <th>نمو الطلبات</th>
+                <th>تنوع المنتجات</th>
+                <th>نمو التنوع</th>
+                <th>متوسط الطلب</th>
+                <th>نمو المتوسط</th>
               </tr>
             </thead>
             <tbody>
               {withGrowth.map((r) => (
-                <tr key={r.year} className="border-b border-border/40">
-                  <td className="py-2 px-2 font-medium">{r.year}</td>
-                  <td className="py-2 px-2 num">{fmtCurrency(r.sales)}</td>
-                  <td className={`py-2 px-2 num ${r.salesGrowth >= 0 ? "text-success" : "text-brand-red"}`}>{r.salesGrowth.toFixed(1)}%</td>
-                  <td className="py-2 px-2 num">{fmtNum(r.orders)}</td>
-                  <td className={`py-2 px-2 num ${r.ordersGrowth >= 0 ? "text-success" : "text-brand-red"}`}>{r.ordersGrowth.toFixed(1)}%</td>
-                  <td className="py-2 px-2 num">{r.products}</td>
-                  <td className={`py-2 px-2 num ${r.productsGrowth >= 0 ? "text-success" : "text-brand-red"}`}>{r.productsGrowth.toFixed(1)}%</td>
-                  <td className="py-2 px-2 num">{fmtCurrency(r.aov)}</td>
-                  <td className={`py-2 px-2 num ${r.aovGrowth >= 0 ? "text-success" : "text-brand-red"}`}>{r.aovGrowth.toFixed(1)}%</td>
+                <tr key={r.year}>
+                  <td className="font-medium">{r.year}</td>
+                  <td className="num">{fmtCurrency(r.sales)}</td>
+                  <td className={`num ${r.salesGrowth >= 0 ? "text-success" : "text-brand-red"}`}>{r.salesGrowth.toFixed(1)}%</td>
+                  <td className="num">{fmtNum(r.orders)}</td>
+                  <td className={`num ${r.ordersGrowth >= 0 ? "text-success" : "text-brand-red"}`}>{r.ordersGrowth.toFixed(1)}%</td>
+                  <td className="num">{r.products}</td>
+                  <td className={`num ${r.productsGrowth >= 0 ? "text-success" : "text-brand-red"}`}>{r.productsGrowth.toFixed(1)}%</td>
+                  <td className="num">{fmtCurrency(r.aov)}</td>
+                  <td className={`num ${r.aovGrowth >= 0 ? "text-success" : "text-brand-red"}`}>{r.aovGrowth.toFixed(1)}%</td>
                 </tr>
               ))}
               {withGrowth.length === 0 && <tr><td colSpan={9} className="py-6 text-center text-muted-foreground">لا توجد بيانات كافية.</td></tr>}
