@@ -288,6 +288,18 @@ export default function UploadCenter() {
 
       {step === 4 && (
         <Section title={`معاينة البيانات (${rows.length} سطر)`}>
+          {sheetSummary.length > 0 && (
+            <div className="mb-4 flex flex-wrap gap-2">
+              {sheetSummary.map((s) => (
+                <div key={s.name} className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-muted/60 border border-border text-xs">
+                  <FileSpreadsheet className="w-3.5 h-3.5 text-brand-navy" />
+                  <span className="font-semibold">{s.name}</span>
+                  <span className="text-muted-foreground">→ سنة {s.year}</span>
+                  <span className="text-muted-foreground">• {s.rows} سطر</span>
+                </div>
+              ))}
+            </div>
+          )}
           <div className="overflow-x-auto max-h-96 border border-border rounded-lg">
             <table className="w-full text-xs">
               <thead className="text-muted-foreground border-b border-border sticky top-0 bg-card">
