@@ -261,11 +261,13 @@ export default function UploadCenter() {
       )}
 
       {step === 2 && (
-        <Section title="اختر السنة">
+        <Section title="اختر السنة الافتراضية">
           <div className="max-w-xs">
-            <Label className="mb-2 block">السنة المرتبطة بالبيانات</Label>
+            <Label className="mb-2 block">السنة الافتراضية (تُستخدم فقط عند غياب سنة في اسم الصفحة)</Label>
             <Input type="number" min={2000} max={2100} value={year} onChange={(e) => setYear(+e.target.value)} />
-            <p className="text-xs text-muted-foreground mt-2">تُستخدم للفلترة والعرض؛ التواريخ الفعلية تُقرأ من الملف.</p>
+            <p className="text-xs text-muted-foreground mt-2">
+              إذا كان ملف Excel يحتوي على عدة صفحات وكل صفحة باسم سنة (مثلاً 2023، 2024، 2025) فسيتم قراءة كل صفحة بسنتها تلقائيًا.
+            </p>
           </div>
         </Section>
       )}
@@ -278,10 +280,12 @@ export default function UploadCenter() {
             <div className="text-xs text-muted-foreground mt-1">صيغ مدعومة: .xlsx • .xls • .csv</div>
             <input type="file" accept=".xlsx,.xls,.csv" className="hidden" onChange={(e) => e.target.files?.[0] && onFile(e.target.files[0])} />
           </label>
-          <div className="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
+          <div className="mt-4 flex items-start gap-2 text-xs text-muted-foreground">
             <FileSpreadsheet className="w-4 h-4" />
-            الأعمدة المدعومة: {Object.values(COLUMN_ALIASES).flat().slice(0, 6).join("، ")}...
-            <button className="text-brand-red hover:underline mr-2" onClick={downloadSampleTemplate}>حمّل نموذج جاهز</button>
+            <div className="flex-1">
+              يدعم النظام ملفات بعدة صفحات — كل صفحة سنة مختلفة (مثال: 2023، 2024، 2025) وسيتم دمجها تلقائيًا مع تحديد سنة كل سطر من اسم الصفحة.
+              <button className="text-brand-red hover:underline mr-2" onClick={downloadSampleTemplate}>حمّل نموذج جاهز</button>
+            </div>
           </div>
         </Section>
       )}
